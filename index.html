@@ -282,6 +282,7 @@
           <button type="button" data-bs-target="#report" data-bs-slide-to="0" class="active"></button>
           <button type="button" data-bs-target="#report" data-bs-slide-to="1"></button>
           <button type="button" data-bs-target="#report" data-bs-slide-to="2"></button>
+          <button type="button" data-bs-target="#report" data-bs-slide-to="4"></button>
         </div>
 
         <!-- The slideshow/carousel -->
@@ -294,6 +295,9 @@
           </div>
           <div class="carousel-item " data-bs-toggle="modal" data-bs-target="#machine_blogModal">
             <img src="img/machine.jpeg" alt="Machine Learning" class="d-block w-100 ">
+          </div>
+          <div class="carousel-item " data-bs-toggle="modal" data-bs-target="#javascript_blogModal">
+            <img src="img/javascript.png" alt="My Application" class="d-block w-100 ">
           </div>
         </div>
 
@@ -928,6 +932,193 @@
                     <li>Sector:
                       <strong>
                         <a href="#">Machine Learning</a>
+                      </strong>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- The Javascript blog -->
+  <div class="modal fade " id="javascript_blogModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">My Application</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="container">
+          <div class="row">
+            <div class="modal-body">
+              <div class="title-bar">
+                <div class="col-md-12">
+                  <h2 class="text-center">Applicatin with JavaScript and Bootstrap</h2>
+                  <div class="heading-border"></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <img class="img-fluid img-centered mt-4" src="img/javascript.png" alt="">
+                  <img class="img-fluid img-centered mt-4" src="img/weather.png" alt="">
+                </div>
+                <div class="col-md-6">
+                  <p>This is Web Application using Javascript and Boostrap. In this application, we will have 2 small
+                    web application.The first is Counter Lock. The second one is Weather Check. I use the Tab Boostrap
+                    to build 2 small application GUI.
+                    I also use Javascript to build Logic in those application. I am talking about Javascript features on
+                    those application below.</p>
+                  <p>
+                    Here is some common javas code that use for both application:
+                  <pre>
+                      <code>
+                        //check if brower suopports or not
+                        function checkLocal() {
+                            if (typeof (Storage) !== "undefined") {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                      </code>
+                      <code>
+                        // read the local store if it have a date time before
+                        function readDataLocalStore(item) {
+                            return localStore.getItem(item);
+                        }
+                      </code>
+                      <code>
+                        // save the data to localStore
+                        function saveDataLocalStore(item, value) {
+                            localStore.setItem(item,value);
+                        }
+                      </code>
+                    </pre>
+                  </p>
+                  <h2> Counter Lock </h2>
+                  <p>In this Application, I use MVC model to control the flow and logic of the application. </p>
+                  <pre>
+                    <span> We handle the logic in the Model.Js </span>
+                    <code>
+                      //count time
+                        function countdown(datetime){
+
+                            var tmp_time  = datepicker.value;
+                            //var tmp_time = datetime;
+                            if(tmp_time === ''){
+                                printMessagesError(1); // 1  == not pick the date yet.
+                                resetCountDown(new DateTime(0,0,0,0))
+                                return;
+                            }
+                            const PicketDate = new Date(tmp_time);
+                            const currentDate = new Date();
+
+                            if(PicketDate.getTime() <= currentDate.getTime()){
+                                printMessagesError(2); // 2 == pick the date smaller than today.
+                                resetCountDown(new DateTime(0,0,0,0))
+                                return;
+                            }
+
+                            const totalSeconds = (PicketDate - currentDate)/1000;
+
+                            const days = Math.floor(totalSeconds/3600/24);
+                            const hours = Math.floor(totalSeconds / 3600) % 24;
+                            const mins = Math.floor(totalSeconds / 60) % 60;
+                            const seconds = Math.floor(totalSeconds) % 60;
+
+                            datetime = new DateTime(days,hours,mins,seconds);
+
+                            printCountDown(datetime);
+                            printMessagesError(0);
+                            
+
+                        }
+                    </code>
+                    <span>We use the controller to dispatch the logic </span>
+                    <code>
+                      // pre-check data from localStore counter tab
+                      storedTime = readDataLocalStore('time');
+                      if (storedTime !== '') {
+                          printDatePicker(storedTime);
+                          countdown(storedTime);
+                      }
+                      function buttonTimeClick() {
+                        countdown(datepicker.value);
+                        saveDataLocalStore('time', datepicker.value);
+                      }
+                    </code>
+                  </pre>
+                  <h2> Weather Check </h2>
+                  <p>In this Application, I use MVC model to control the flow and logic of the application. </p>
+                  <pre>
+                    <span> We handle the logic in the Model.Js </span>
+                    <code>
+                      const url = (city)=>`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
+                      // get weather
+                      async function getWeatherByLocation(city){
+                          saveDataLocalStore('city',city);
+                          const resp = await fetch(url(city),{origin: "cors"});
+                          const respData = await resp.json();
+
+                          console.log(respData);
+
+                          addWeatherToPages(respData);
+                      }
+                    </code>
+                    <span>We use the controller to dispatch the logic </span>
+                    <code>
+                      // pre-check data from localStore weather tab
+                      storedCity = readDataLocalStore('city');
+                      console.log(storedCity);
+                      if (storedCity !== null) {
+                          addCityInput(storedCity);
+                          getWeatherByLocation(storedCity);
+                      }
+
+
+                      // weather tab
+                      const form = document.getElementById("form");
+                      form.addEventListener('submit', (e) => {
+                          e.preventDefault();
+                          const city = search.value;
+                          if (city) {
+                              getWeatherByLocation(city);
+                          }
+                      });
+                    </code>
+                  </pre>
+                  <ul class="list-inline item-details">
+                    <li>Author:
+                      <strong>
+                        <a href="#">datnh </a>
+                      </strong>
+                    </li>
+                    <li>Date:
+                      <strong>
+                        <a href="#">March 2022</a>
+                      </strong>
+                    </li>
+                    <li>Sector:
+                      <strong>
+                        <a href="#">JavaScript</a>
+                      </strong>
+                    </li>
+                    <li>Live Demo:
+                      <strong>
+                        <a href="https://datnh0710.github.io/my_application/">Demo</a>
                       </strong>
                     </li>
                   </ul>
